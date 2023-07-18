@@ -22,9 +22,9 @@ buildscript {
         mavenLocal()
         mavenCentral()
         jcenter()
-        maven { url "https://dl.bintray.com/graphql-java-kickstart/releases" }
-        maven { url "https://plugins.gradle.org/m2/" }
-        maven { url 'https://repo.spring.io/plugins-release' }
+//        maven { url "https://dl.bintray.com/graphql-java-kickstart/releases" }
+//        maven { url "https://plugins.gradle.org/m2/" }
+//        maven { url 'https://repo.spring.io/plugins-release' }
     }
     dependencies {
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+"
@@ -42,6 +42,8 @@ plugins {
 subprojects {
     apply plugin: 'idea'
     apply plugin: 'java'
+    // 要执行子build.gradle中的uploadArchives，得加入maven插件
+    apply plugin: 'maven'
     apply plugin: 'maven-publish'
     apply plugin: "com.jfrog.bintray"
     apply plugin: 'io.franzbecker.gradle-lombok'
