@@ -40,3 +40,18 @@ dependencies {
     testRuntime 'org.springframework:spring-web:4.3.7.RELEASE'
     testCompile 'com.google.guava:guava:24.1.1-jre'
 }
+
+//这个本就能deploy源码。需要时也可以参考graphql-spring-boot项目，换为publish。
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //如果上传至私服，修改url为私服地址
+            repository(url: "https://nexus.8btc-ops.com/repository/maven-releases/") {
+                authentication(userName: System.getenv('NEXUS_USERNAME'), password: System.getenv('NEXUS_PASSWORD'))
+            }
+            pom.version = project.version
+            pom.artifactId = 'graphql-java-servlet'
+            pom.groupId = 'com.graphql-java-kickstart'
+        }
+    }
+}
