@@ -33,10 +33,10 @@ dependencies {
     // Unit testing
     testImplementation "org.apache.groovy:groovy-all:4.0.6"
     testImplementation "org.spockframework:spock-core:2.3-groovy-4.0"
-    testRuntime "cglib:cglib-nodep:3.2.4"
-    testRuntime "org.objenesis:objenesis:2.5.1"
-    testCompile 'org.slf4j:slf4j-simple:1.7.24'
-    testCompile 'org.springframework:spring-test:5.3.23'
-    testRuntime 'org.springframework:spring-web:5.3.23'
-    testCompile 'com.google.guava:guava:24.1.1-jre'
+    testRuntimeOnly "cglib:cglib-nodep:3.3.0"
+    testRuntimeOnly "org.objenesis:objenesis:3.3"
+    testImplementation 'org.slf4j:slf4j-simple:2.0.2'
+    testImplementation 'org.springframework:spring-test:5.3.23'
+    testRuntimeOnly 'org.springframework:spring-web:5.3.23'
+    testImplementation 'com.google.guava:guava:31.1-jre'
 }
