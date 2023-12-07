@@ -5,9 +5,9 @@ import graphql.Scalars
 import graphql.execution.ExecutionStepInfo
 import graphql.execution.MergedField
 import graphql.execution.reactive.SingleSubscriberPublisher
+import graphql.kickstart.servlet.input.GraphQLInvocationInputFactory
 import graphql.language.Field
 import graphql.schema.GraphQLNonNull
-import graphql.kickstart.servlet.input.GraphQLInvocationInputFactory
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 import spock.lang.Shared
@@ -127,23 +127,24 @@ class AbstractGraphQLHttpServletSpec extends Specification {
         getResponseContent().data.echo == "special char á"
     }
 
-    def "async query over HTTP GET starts async request"() {
+    def "disabling async support on request over HTTP GET does not start async request"() {
         setup:
         servlet = TestUtils.createDefaultServlet({ env -> env.arguments.arg }, { env -> env.arguments.arg }, { env ->
-            AtomicReference<SingleSubscriberPublisher<String>> publisherRef = new AtomicReference<>();
+            AtomicReference<SingleSubscriberPublisher<String>> publisherRef = new AtomicReference<>()
             publisherRef.set(new SingleSubscriberPublisher<>({ subscription ->
-                publisherRef.get().offer(env.arguments.arg)
+                publisherRef.get().offer((String) env.arguments.arg)
                 publisherRef.get().noMoreData()
             }))
             return publisherRef.get()
-        }, true)
+        })
         request.addParameter('query', 'query { echo(arg:"test") }')
+        request.setAsyncSupported(false)
 
         when:
         servlet.doGet(request, response)
 
         then:
-        request.asyncStarted == true
+        request.asyncContext == null
     }
 
     def "query over HTTP GET with variables returns data"() {
@@ -313,27 +314,6 @@ class AbstractGraphQLHttpServletSpec extends Specification {
         getBatchedResponseContent()[1].data.echo == "test"
     }
 
-    def "deferred query over HTTP GET"() {
-        setup:
-        request.addParameter('query', 'query { echo(arg:"test") @defer }')
-
-        when:
-        servlet.doGet(request, response)
-
-        then:
-        response.getStatus() == STATUS_OK
-        response.getContentType() == CONTENT_TYPE_SERVER_SENT_EVENTS
-        getSubscriptionResponseContent()[0].data.echo == null
-
-        when:
-        subscriptionLatch.await(1, TimeUnit.SECONDS)
-
-        then:
-        def content = getSubscriptionResponseContent()
-        content[1].data == "test"
-        content[1].path == ["echo"]
-    }
-
     def "Batch Execution Handler allows limiting batches and sending error messages."() {
         setup:
         servlet = TestUtils.createBatchCustomizedServlet({ env -> env.arguments.arg }, { env -> env.arguments.arg }, { env ->
@@ -442,25 +422,45 @@ class AbstractGraphQLHttpServletSpec extends Specification {
         getResponseContent().data.echo == "test"
     }
 
-    def "async query over HTTP POST starts async request"() {
+    def "query over HTTP POST multiline body returns data"() {
         setup:
-        servlet = TestUtils.createDefaultServlet({ env -> env.arguments.arg }, { env -> env.arguments.arg }, { env ->
-            AtomicReference<SingleSubscriberPublisher<String>> publisherRef = new AtomicReference<>();
-            publisherRef.set(new SingleSubscriberPublisher<>({ subscription ->
-                publisherRef.get().offer(env.arguments.arg)
-                publisherRef.get().noMoreData()
-            }))
-            return publisherRef.get()
-        }, true)
-        request.setContent(mapper.writeValueAsBytes([
-                query: 'query { echo(arg:"test") }'
-        ]))
+        request.setContent("""
+        query { object {
+a
+b
+        } }""".bytes)
+        request.setMethod("POST")
+        request.contentType = "application/graphql"
 
         when:
         servlet.doPost(request, response)
 
         then:
-        request.asyncStarted == true
+        response.getStatus() == STATUS_OK
+        response.getContentType() == CONTENT_TYPE_JSON_UTF8
+        getResponseContent().data.object.b == null
+    }
+
+    def "disabling async support on request over HTTP POST does not start async request"() {
+        setup:
+        servlet = TestUtils.createDefaultServlet({ env -> env.arguments.arg }, { env -> env.arguments.arg }, { env ->
+            AtomicReference<SingleSubscriberPublisher<String>> publisherRef = new AtomicReference<>()
+            publisherRef.set(new SingleSubscriberPublisher<>({ subscription ->
+                publisherRef.get().offer((String) env.arguments.arg)
+                publisherRef.get().noMoreData()
+            }))
+            return publisherRef.get()
+        })
+        request.setContent(mapper.writeValueAsBytes([
+                query: 'query { echo(arg:"test") }'
+        ]))
+        request.setAsyncSupported(false)
+
+        when:
+        servlet.doPost(request, response)
+
+        then:
+        request.asyncContext == null
     }
 
     def "query over HTTP POST body with graphql contentType returns data"() {
@@ -753,6 +753,22 @@ class AbstractGraphQLHttpServletSpec extends Specification {
         response.getStatus() == STATUS_OK
         response.getContentType() == CONTENT_TYPE_JSON_UTF8
         getResponseContent().data.echoFiles == ["test", "test again"]
+    }
+
+    def "errors while accessing file from the request"() {
+        setup:
+        request = Spy(MockHttpServletRequest)
+        request.setMethod("POST")
+        request.setContentType("multipart/form-data, boundary=test")
+        // See https://github.com/apache/tomcat/blob/main/java/org/apache/catalina/connector/Request.java#L2775...L2791
+        request.getParts() >> { throw new IllegalStateException() }
+
+        when:
+        servlet.doPost(request, response)
+
+        then:
+        response.getStatus() == STATUS_BAD_REQUEST
+        response.getContentLength() == 0
     }
 
     def "batched query over HTTP POST body returns data"() {
@@ -1098,69 +1114,13 @@ class AbstractGraphQLHttpServletSpec extends Specification {
         getSubscriptionResponseContent()[1].data.echo == "Second\n\ntest"
     }
 
-    def "defer query over HTTP POST"() {
-        setup:
-        request.setContent('{"query": "subscription Subscription($arg: String!) { echo(arg: $arg) }", "operationName": "Subscription", "variables": {"arg": "test"}}'.bytes)
-        request.setAsyncSupported(true)
-        request.setMethod("POST")
-
-        when:
-        servlet.doPost(request, response)
-        then:
-        response.getStatus() == STATUS_OK
-        response.getContentType() == CONTENT_TYPE_SERVER_SENT_EVENTS
-
-        when:
-        subscriptionLatch.await(1, TimeUnit.SECONDS)
-        then:
-        getSubscriptionResponseContent()[0].data.echo == "First\n\ntest"
-        getSubscriptionResponseContent()[1].data.echo == "Second\n\ntest"
-    }
-
-    def "deferred query that takes longer than initial results, should still be sent second"() {
-        setup:
-        servlet = TestUtils.createDefaultServlet({ env ->
-            if (env.getField().name == "a") {
-                Thread.sleep(1000)
-            }
-            env.arguments.arg
-        })
-        request.setContent(mapper.writeValueAsBytes([
-                query: '''
-                    { 
-                        object { 
-                            a(arg: "Hello") 
-                            b(arg: "World") @defer
-                        }     
-                    }
-                '''
-        ]))
-        request.setAsyncSupported(true)
-        request.setMethod("POST")
-
-        when:
-        servlet.doPost(request, response)
-
-        then:
-        response.getStatus() == STATUS_OK
-        response.getContentType() == CONTENT_TYPE_SERVER_SENT_EVENTS
-        getSubscriptionResponseContent()[0].data.object.a == "Hello" // a has a Thread.sleep
-
-        when:
-        subscriptionLatch.await(1, TimeUnit.SECONDS)
-
-        then:
-        def content = getSubscriptionResponseContent()
-        content[1].data == "World"
-        content[1].path == ["object", "b"]
-    }
-
     def "errors before graphql schema execution return internal server error"() {
         setup:
-        servlet = SimpleGraphQLHttpServlet.newBuilder(GraphQLInvocationInputFactory.newBuilder {
+        GraphQLConfiguration configuration = GraphQLConfiguration.with(GraphQLInvocationInputFactory.newBuilder {
             throw new TestException()
         }.build()).build()
-        servlet.init(null)
+        servlet = GraphQLHttpServlet.with(configuration)
+        servlet.init()
 
         request.setPathInfo('/schema.json')
 
@@ -1168,8 +1128,7 @@ class AbstractGraphQLHttpServletSpec extends Specification {
         servlet.doGet(request, response)
 
         then:
-        noExceptionThrown()
-        response.getStatus() == STATUS_ERROR
+        response.getStatus() == STATUS_BAD_REQUEST
     }
 
     def "errors while data fetching are masked in the response"() {

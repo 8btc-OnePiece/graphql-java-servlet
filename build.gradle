@@ -21,10 +21,8 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
-//        maven { url "https://dl.bintray.com/graphql-java-kickstart/releases" }
-//        maven { url "https://plugins.gradle.org/m2/" }
-//        maven { url 'https://repo.spring.io/plugins-release' }
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url 'https://repo.spring.io/plugins-release' }
     }
     dependencies {
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+"
@@ -52,9 +50,7 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
-        maven { url "https://dl.bintray.com/graphql-java-kickstart/releases" }
-        maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         maven { url "https://repo.spring.io/libs-milestone" }
     }
 
