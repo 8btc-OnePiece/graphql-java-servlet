@@ -4,8 +4,8 @@ import graphql.kickstart.execution.input.GraphQLBatchedInvocationInput;
 import graphql.kickstart.servlet.input.BatchInputPreProcessResult;
 import graphql.kickstart.servlet.input.BatchInputPreProcessor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class TestBatchInputPreProcessor implements BatchInputPreProcessor {
 

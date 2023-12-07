@@ -50,7 +50,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @Component(
-    service = {javax.servlet.http.HttpServlet.class, javax.servlet.Servlet.class},
+    service = {jakarta.servlet.http.HttpServlet.class, jakarta.servlet.Servlet.class},
     property = {"service.description=GraphQL HTTP Servlet"}
 )
 @Designate(ocd = OsgiGraphQLHttpServletConfiguration.class, factory = true)

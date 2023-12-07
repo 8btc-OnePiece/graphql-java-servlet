@@ -4,8 +4,8 @@ import graphql.kickstart.execution.GraphQLQueryResult;
 import graphql.kickstart.execution.GraphQLObjectMapper;
 import java.io.IOException;
 import java.util.Objects;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 interface QueryResponseWriter {
 

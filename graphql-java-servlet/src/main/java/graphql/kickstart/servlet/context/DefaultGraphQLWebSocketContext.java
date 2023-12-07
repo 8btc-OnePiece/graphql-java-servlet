@@ -2,8 +2,8 @@ package graphql.kickstart.servlet.context;
 
 import graphql.kickstart.execution.context.DefaultGraphQLContext;
 import javax.security.auth.Subject;
-import javax.websocket.Session;
-import javax.websocket.server.HandshakeRequest;
+import jakarta.websocket.Session;
+import jakarta.websocket.server.HandshakeRequest;
 import org.dataloader.DataLoaderRegistry;
 
 public class DefaultGraphQLWebSocketContext extends DefaultGraphQLContext implements GraphQLWebSocketContext {
