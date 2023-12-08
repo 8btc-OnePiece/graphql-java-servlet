@@ -41,7 +41,6 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'java'
     // 要执行子build.gradle中的uploadArchives，得加入maven插件
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
     apply plugin: "com.jfrog.bintray"
     apply plugin: 'io.franzbecker.gradle-lombok'
