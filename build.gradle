@@ -34,7 +34,7 @@ plugins {
     id 'net.researchgate.release' version '2.7.0'
     id 'io.franzbecker.gradle-lombok' version '3.2.0' apply false
     id "com.jfrog.artifactory" version "4.11.0" apply false
-    id "biz.aQute.bnd.builder" version "5.0.0" apply false
+    id "biz.aQute.bnd.builder" version "6.3.1" apply false
 }
 
 subprojects {
@@ -68,7 +68,7 @@ subprojects {
     compileJava.dependsOn(processResources)
 
     lombok {
-        version = "1.18.4"
+        version = "1.18.24"
         sha256 = ""
     }
 
