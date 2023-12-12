@@ -56,8 +56,8 @@ afterEvaluate {
             maven {
                 name = "snapshot"
                 credentials {
-                    username = System.env.BINTRAY_USER ?: project.findProperty('BINTRAY_USER') ?: ''
-                    password = System.env.BINTRAY_PASS ?: project.findProperty('BINTRAY_PASS') ?: ''
+                    username = System.env.NEXUS_USERNAME ?: project.findProperty('NEXUS_PASSWORD') ?: ''
+                    password = System.env.NEXUS_PASSWORD ?: project.findProperty('NEXUS_PASSWORD') ?: ''
                 }
                 allowInsecureProtocol true
                 url = 'https://nexus.8btc-ops.com/repository/maven-snapshots/'
