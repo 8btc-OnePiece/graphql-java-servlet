@@ -41,27 +41,3 @@ dependencies {
     testRuntimeOnly 'org.springframework:spring-web:6.0.2'
     testImplementation 'com.google.guava:guava:31.1-jre'
 }
-
-afterEvaluate {
-    publishing {
-        publications {
-            snapshot(MavenPublication) {
-                from components.java
-                groupId = 'com.graphql-java-kickstart'
-                artifactId = 'graphql-java-servlet'
-                version = '9.1.0.OnePiece.2-SNAPSHOT'
-            }
-        }
-        repositories {
-            maven {
-                name = "snapshot"
-                credentials {
-                    username = System.env.NEXUS_USERNAME ?: project.findProperty('NEXUS_PASSWORD') ?: ''
-                    password = System.env.NEXUS_PASSWORD ?: project.findProperty('NEXUS_PASSWORD') ?: ''
-                }
-                allowInsecureProtocol true
-                url = 'https://nexus.8btc-ops.com/repository/maven-snapshots/'
-            }
-        }
-    }
-}
