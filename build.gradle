@@ -81,6 +81,14 @@ subprojects {
         publishing {
             publications {
                 snapshot(MavenPublication) {
+                    versionMapping {
+                        usage('java-api') {
+                            fromResolutionOf('runtimeClasspath')
+                        }
+                        usage('java-runtime') {
+                            fromResolutionResult()
+                        }
+                    }
                     groupId = 'com.graphql-java-kickstart'
                     version = version
                     artifact sourcesJar
