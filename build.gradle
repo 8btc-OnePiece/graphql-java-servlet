@@ -82,7 +82,7 @@ subprojects {
             publications {
                 snapshot(MavenPublication) {
                     groupId = 'com.graphql-java-kickstart'
-                    version = '9.1.0.2-SNAPSHOT'
+                    version = version
                     artifact sourcesJar
                     from components.java
                 }
