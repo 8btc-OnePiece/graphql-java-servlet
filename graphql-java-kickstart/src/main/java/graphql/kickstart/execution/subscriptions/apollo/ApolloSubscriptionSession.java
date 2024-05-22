@@ -18,13 +18,12 @@ public class ApolloSubscriptionSession extends DefaultSubscriptionSession {
   }
 
   @Override
-  public void sendErrorMessage(String id) {
-    sendMessage(new OperationMessage(Type.GQL_ERROR, id, null));
+  public void sendErrorMessage(String id, Object payload) {
+    sendMessage(new OperationMessage(Type.GQL_ERROR, id, payload));
   }
 
   @Override
   public void sendCompleteMessage(String id) {
     sendMessage(new OperationMessage(Type.GQL_COMPLETE, id, null));
   }
-
 }

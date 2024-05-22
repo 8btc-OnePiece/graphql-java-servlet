@@ -1,7 +1,7 @@
 package graphql.kickstart.servlet;
 
-import graphql.kickstart.execution.context.ContextSetting;
 import graphql.kickstart.execution.GraphQLObjectMapper;
+import graphql.kickstart.execution.context.ContextSetting;
 import graphql.kickstart.servlet.input.GraphQLInvocationInputFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +17,6 @@ abstract class AbstractGraphQLInvocationInputParser implements GraphQLInvocation
   }
 
   boolean isBatchedQuery(String query) {
-    return query != null && !query.trim().isEmpty() && query.trim().startsWith("[");
+    return query != null && query.trim().startsWith("[");
   }
-
 }

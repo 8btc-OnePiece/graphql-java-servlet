@@ -2,7 +2,7 @@ package graphql.kickstart.servlet.subscriptions;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Subscriber;
@@ -35,7 +35,7 @@ public class WebSocketSendSubscriber implements Subscriber<String> {
 
   @Override
   public void onError(Throwable t) {
-
+    log.error("WebSocket error", t);
   }
 
   @Override
@@ -51,5 +51,4 @@ public class WebSocketSendSubscriber implements Subscriber<String> {
     }
     subscriptionRef.get().cancel();
   }
-
 }

@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
     }
 }
@@ -17,26 +16,28 @@ dependencies {
     api(project(':graphql-java-kickstart'))
 
     // Servlet
-    compile 'javax.servlet:javax.servlet-api:3.1.0'
-    compile 'javax.websocket:javax.websocket-api:1.1'
+    api 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    api 'jakarta.websocket:jakarta.websocket-api:2.1.0'
+    api 'jakarta.websocket:jakarta.websocket-client-api:2.1.0'
+    implementation "org.slf4j:slf4j-api:$LIB_SLF4J_VER"
 
     // OSGi
     compileOnly 'org.osgi:org.osgi.core:6.0.0'
-    compileOnly 'org.osgi:org.osgi.service.cm:1.5.0'
-    compileOnly 'org.osgi:org.osgi.service.component:1.3.0'
-    compileOnly 'org.osgi:org.osgi.service.component.annotations:1.3.0'
-    compileOnly 'org.osgi:org.osgi.service.metatype.annotations:1.3.0'
+    compileOnly 'org.osgi:org.osgi.service.cm:1.6.1'
+    compileOnly 'org.osgi:org.osgi.service.component:1.5.0'
+    compileOnly 'org.osgi:org.osgi.service.component.annotations:1.5.0'
+    compileOnly 'org.osgi:org.osgi.service.metatype.annotations:1.4.1'
     compileOnly 'org.osgi:org.osgi.annotation:6.0.0'
 
-    testCompile 'io.github.graphql-java:graphql-java-annotations:5.2'
+    testImplementation 'io.github.graphql-java:graphql-java-annotations:8.3'
 
     // Unit testing
-    testCompile "org.codehaus.groovy:groovy-all:2.4.1"
-    testCompile "org.spockframework:spock-core:1.1-groovy-2.4-rc-3"
-    testRuntime "cglib:cglib-nodep:3.2.4"
-    testRuntime "org.objenesis:objenesis:2.5.1"
-    testCompile 'org.slf4j:slf4j-simple:1.7.24'
-    testCompile 'org.springframework:spring-test:4.3.7.RELEASE'
-    testRuntime 'org.springframework:spring-web:4.3.7.RELEASE'
-    testCompile 'com.google.guava:guava:24.1.1-jre'
+    testImplementation "org.apache.groovy:groovy-all:4.0.6"
+    testImplementation "org.spockframework:spock-core:2.3-groovy-4.0"
+    testRuntimeOnly "cglib:cglib-nodep:3.3.0"
+    testRuntimeOnly "org.objenesis:objenesis:3.3"
+    testImplementation "org.slf4j:slf4j-simple:$LIB_SLF4J_VER"
+    testImplementation 'org.springframework:spring-test:6.0.2'
+    testRuntimeOnly 'org.springframework:spring-web:6.0.2'
+    testImplementation 'com.google.guava:guava:31.1-jre'
 }

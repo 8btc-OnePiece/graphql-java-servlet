@@ -1,14 +1,13 @@
 package graphql.kickstart.servlet.context;
 
-import graphql.kickstart.execution.context.GraphQLContext;
-import javax.websocket.Session;
-import javax.websocket.server.HandshakeRequest;
-import java.util.Optional;
+import graphql.kickstart.execution.context.GraphQLKickstartContext;
+import jakarta.websocket.Session;
+import jakarta.websocket.server.HandshakeRequest;
 
-public interface GraphQLWebSocketContext extends GraphQLContext {
+/** @deprecated Use {@link graphql.kickstart.execution.context.GraphQLKickstartContext} instead */
+public interface GraphQLWebSocketContext extends GraphQLKickstartContext {
 
-    Session getSession();
+  Session getSession();
 
-    HandshakeRequest getHandshakeRequest();
-
+  HandshakeRequest getHandshakeRequest();
 }

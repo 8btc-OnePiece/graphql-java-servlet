@@ -15,8 +15,7 @@ import org.reactivestreams.Subscription;
 @RequiredArgsConstructor
 public class DefaultSubscriptionSession implements SubscriptionSession {
 
-  @Getter
-  private final GraphQLSubscriptionMapper mapper;
+  @Getter private final GraphQLSubscriptionMapper mapper;
   private SingleSubscriberPublisher<String> publisher = new SingleSubscriberPublisher<>();
   private SessionSubscriptions subscriptions = new SessionSubscriptions();
 
@@ -53,13 +52,13 @@ public class DefaultSubscriptionSession implements SubscriptionSession {
   }
 
   @Override
-  public void sendErrorMessage(String id) {
-
+  public void sendErrorMessage(String id, Object payload) {
+    send(mapper.serialize(payload));
   }
 
   @Override
   public void sendCompleteMessage(String id) {
-
+    // default empty implementation
   }
 
   @Override
@@ -103,5 +102,4 @@ public class DefaultSubscriptionSession implements SubscriptionSession {
   public String toString() {
     return getId();
   }
-
 }

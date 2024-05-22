@@ -3,9 +3,10 @@ package graphql.kickstart.execution.subscriptions.apollo;
 import graphql.kickstart.execution.subscriptions.SubscriptionSession;
 import java.time.Duration;
 
-public class KeepAliveSubscriptionConnectionListener implements ApolloSubscriptionConnectionListener {
+public class KeepAliveSubscriptionConnectionListener
+    implements ApolloSubscriptionConnectionListener {
 
-  private final ApolloSubscriptionKeepAliveRunner keepAliveRunner;
+  protected final ApolloSubscriptionKeepAliveRunner keepAliveRunner;
 
   public KeepAliveSubscriptionConnectionListener() {
     this(Duration.ofSeconds(15));
@@ -33,6 +34,11 @@ public class KeepAliveSubscriptionConnectionListener implements ApolloSubscripti
   @Override
   public void onTerminate(SubscriptionSession session, OperationMessage message) {
     keepAliveRunner.abort(session);
+  }
+
+  @Override
+  public void shutdown() {
+    keepAliveRunner.shutdown();
   }
 
 }

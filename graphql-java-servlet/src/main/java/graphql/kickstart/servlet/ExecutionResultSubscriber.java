@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.servlet.AsyncContext;
+import jakarta.servlet.AsyncContext;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -17,7 +17,9 @@ class ExecutionResultSubscriber implements Subscriber<ExecutionResult> {
   private final GraphQLObjectMapper graphQLObjectMapper;
   private final CountDownLatch completedLatch = new CountDownLatch(1);
 
-  ExecutionResultSubscriber(AtomicReference<Subscription> subscriptionRef, AsyncContext asyncContext,
+  ExecutionResultSubscriber(
+      AtomicReference<Subscription> subscriptionRef,
+      AsyncContext asyncContext,
       GraphQLObjectMapper graphQLObjectMapper) {
     this.subscriptionRef = subscriptionRef;
     this.asyncContext = asyncContext;
@@ -40,6 +42,7 @@ class ExecutionResultSubscriber implements Subscriber<ExecutionResult> {
       writer.flush();
       subscriptionRef.get().request(1);
     } catch (IOException ignored) {
+      // ignore
     }
   }
 
@@ -58,5 +61,4 @@ class ExecutionResultSubscriber implements Subscriber<ExecutionResult> {
   void await() throws InterruptedException {
     completedLatch.await();
   }
-
 }

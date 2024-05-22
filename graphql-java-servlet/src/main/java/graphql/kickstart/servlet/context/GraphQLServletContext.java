@@ -1,20 +1,20 @@
 package graphql.kickstart.servlet.context;
 
-import graphql.kickstart.execution.context.GraphQLContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
+import graphql.kickstart.execution.context.GraphQLKickstartContext;
 import java.util.List;
 import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 
-public interface GraphQLServletContext extends GraphQLContext {
+/** @deprecated Use {@link graphql.kickstart.execution.context.GraphQLKickstartContext} instead */
+public interface GraphQLServletContext extends GraphQLKickstartContext {
 
-    List<Part> getFileParts();
+  List<Part> getFileParts();
 
-    Map<String, List<Part>> getParts();
+  Map<String, List<Part>> getParts();
 
-    HttpServletRequest getHttpServletRequest();
+  HttpServletRequest getHttpServletRequest();
 
-    HttpServletResponse getHttpServletResponse();
-
+  HttpServletResponse getHttpServletResponse();
 }

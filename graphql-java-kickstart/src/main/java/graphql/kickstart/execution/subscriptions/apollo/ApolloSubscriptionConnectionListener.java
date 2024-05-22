@@ -21,4 +21,7 @@ public interface ApolloSubscriptionConnectionListener extends SubscriptionConnec
     // do nothing
   }
 
+  default void shutdown() {
+    // do nothing
+  }
 }

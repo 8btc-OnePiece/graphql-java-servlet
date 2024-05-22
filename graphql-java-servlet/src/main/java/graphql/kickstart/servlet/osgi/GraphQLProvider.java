@@ -1,4 +1,3 @@
 package graphql.kickstart.servlet.osgi;
 
-public interface GraphQLProvider {
-}
+public interface GraphQLProvider {}
