@@ -34,7 +34,7 @@ plugins {
     id "biz.aQute.bnd.builder" version "6.4.0" apply false
     id "org.sonarqube" version "3.5.0.2730"
     id "jacoco"
-    id "io.github.gradle-nexus.publish-plugin" version '1.1.0'
+//    id "io.github.gradle-nexus.publish-plugin" version '1.1.0'
 }
 
 sonarqube {
@@ -51,9 +51,8 @@ subprojects {
     apply plugin: 'org.sonarqube'
     apply plugin: 'java'
     // 要执行子build.gradle中的uploadArchives，得加入maven插件
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
-    apply plugin: 'signing'
+//    apply plugin: 'signing'
 
     repositories {
         mavenLocal()
@@ -114,15 +113,15 @@ subprojects {
             withJavadocJar()
         }
 
-        if (!version.toString().endsWith('-SNAPSHOT')) {
-            ext["signing.keyId"] = System.env.SIGNING_KEY_ID
-            ext["signing.password"] = System.env.SIGNING_PASSWORD
-            ext["signing.secretKeyRingFile"] = System.env.SIGNING_SECRET_KEY_RING_FILE
-
-            signing {
-                sign publishing.publications
-            }
-        }
+//        if (!version.toString().endsWith('-SNAPSHOT')) {
+//            ext["signing.keyId"] = System.env.SIGNING_KEY_ID
+//            ext["signing.password"] = System.env.SIGNING_PASSWORD
+//            ext["signing.secretKeyRingFile"] = System.env.SIGNING_SECRET_KEY_RING_FILE
+//
+//            signing {
+//                sign publishing.publications
+//            }
+//        }
 
         publishing {
             publications {
@@ -142,54 +141,35 @@ subprojects {
                     pom {
                         name = PROJECT_NAME
                         description = 'relay.js-compatible GraphQL servlet'
-                        url = 'https://github.com/graphql-java-kickstart/graphql-java-servlet'
-                        inceptionYear = '2016'
-
-                        scm {
-                            url = 'https://github.com/graphql-java-kickstart/graphql-java-servlet'
-                            connection = 'scm:https://github.com/graphql-java-kickstart/graphql-java-servlet.git'
-                            developerConnection = 'scm:git://github.com/graphql-java-kickstart/graphql-java-servlet.git'
-                        }
-
-                        licenses {
-                            license {
-                                name = 'The Apache Software License, Version 2.0'
-                                url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-                                distribution = 'repo'
-                            }
-                        }
-
-                        developers {
-                            developer {
-                                id = 'oliemansm'
-                                name = 'Michiel Oliemans'
-                            }
-                            developer {
-                                id = 'yrashk'
-                                name = 'Yurii Rashkovskii'
-                                email = 'yrashk@gmail.com'
-                            }
-                            developer {
-                                id = 'apottere'
-                                name = 'Andrew Potter'
-                                email = 'apottere@gmail.com'
-                            }
-                        }
                     }
                 }
+
+
+            }
+
+            repositories {
+//                    maven {
+//                        name = 'OnePiece'
+//                        url 'https://nexus.8btc-ops.com/repository/maven-releases/'
+//                        credentials {
+//                            username = System.env.MAVEN_CENTRAL_USER
+//                            password = System.env.MAVEN_CENTRAL_PASSWORD
+//                        }
+//                    }
+                mavenLocal()
             }
         }
     }
 }
 
-nexusPublishing {
-    repositories {
-        sonatype {
-            username = System.env.OSS_USER_TOKEN_KEY ?: project.findProperty('OSS_USER_TOKEN_KEY') ?: ''
-            password = System.env.OSS_USER_TOKEN_PASS ?: project.findProperty('OSS_USER_TOKEN_PASS') ?: ''
-        }
-    }
-}
+//nexusPublishing {
+//    repositories {
+//        sonatype {
+//            username = System.env.OSS_USER_TOKEN_KEY ?: project.findProperty('OSS_USER_TOKEN_KEY') ?: ''
+//            password = System.env.OSS_USER_TOKEN_PASS ?: project.findProperty('OSS_USER_TOKEN_PASS') ?: ''
+//        }
+//    }
+//}
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
