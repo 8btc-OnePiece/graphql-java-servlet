@@ -50,7 +50,6 @@ subprojects {
     apply plugin: 'jacoco'
     apply plugin: 'org.sonarqube'
     apply plugin: 'java'
-    // 要执行子build.gradle中的uploadArchives，得加入maven插件
     apply plugin: 'maven-publish'
 //    apply plugin: 'signing'
 
@@ -153,28 +152,19 @@ subprojects {
             }
 
             repositories {
-//                    maven {
-//                        name = 'OnePiece'
-//                        url 'https://nexus.8btc-ops.com/repository/maven-releases/'
-//                        credentials {
-//                            username = System.env.MAVEN_CENTRAL_USER
-//                            password = System.env.MAVEN_CENTRAL_PASSWORD
-//                        }
-//                    }
+                maven {
+                    name = 'onePiece-releases'
+                    url 'https://nexus.8btc-ops.com/repository/maven-releases/'
+                    credentials {
+                        username System.getenv("MAVEN_CENTRAL_USER")
+                        password System.getenv("MAVEN_CENTRAL_PASSWORD")
+                    }
+                }
                 mavenLocal()
             }
         }
     }
 }
-
-//nexusPublishing {
-//    repositories {
-//        sonatype {
-//            username = System.env.OSS_USER_TOKEN_KEY ?: project.findProperty('OSS_USER_TOKEN_KEY') ?: ''
-//            password = System.env.OSS_USER_TOKEN_PASS ?: project.findProperty('OSS_USER_TOKEN_PASS') ?: ''
-//        }
-//    }
-//}
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
